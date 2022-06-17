@@ -1,0 +1,70 @@
+@startuml
+
+note as N1
+  Basic Types:
+  Type | Corresponding C# Type
+  Integer | int
+  Boolean | boolean
+  String | String
+  Time | DateTime
+  Duration | TimeSpan  
+end note
+
+namespace Backend {
+	class Calendar {
+		+ Plans: Plan[]
+		+ Memos: Memo[]
+
+		+ AddPlan(plan: Plan)
+		+ AddMemo(memo: Memo)
+	}
+	Calendar *-- Plan
+	Calendar *-- Memo
+
+	abstract PlannedItem {
+		+ StartTime: Time
+		+ DeadLine: Time
+		+ Duration: Duration
+		+ Cycle: Duration
+		
+		# GetCapsules(range: TimeRange): Capsule[]
+		+ ChangeDuration(duration: Duration)
+		+ ChangeDeadline(deadline: Time)
+	}
+	PlannedItem <|-- Plan
+	PlannedItem <|-- Memo
+	PlannedItem o-- Capsule
+	PlannedItem o-- Util.TimeRange
+
+	class Plan {
+		+ Project: Project
+
+		+ Complete(time: Duration)
+	}
+
+	class Memo {
+		+ Name: String
+		+ Description: String
+	}
+
+	class Capsule {
+		+ Name: String
+		+ Description: String
+		+ Range: TimeRange
+	}
+	Capsule o-- Util.TimeRange
+}
+
+namespace Util {
+	class TimeRange {
+		+ StartTime: Time
+		+ EndTime: Time
+		+ Duration: Duration
+		
+		+ IsTemporary(): Boolean
+	}
+}
+
+namespace Frontend{
+}
+@enduml
